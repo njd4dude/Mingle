@@ -264,7 +264,7 @@ const ChatRoom = () => {
             {imageURL !== "" && <img src={imageURL} />}
           </div>
           <div className="bg-blue-500 flex">
-            <label className="flex justify-center items-center  bg-green-400 w-40 hover:scale-105 border ">
+            <label className="flex justify-center items-center  bg-green-400 w-40 hover:scale-105 border cursor-pointer">
               <FaPaperclip className="" size={50} />
               <input
                 type="file"
