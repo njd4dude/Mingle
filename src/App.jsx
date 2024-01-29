@@ -34,20 +34,20 @@ const storage = getStorage(app);
 
 export { auth, db, storage }; // Exporting them together
 
-//NOTE: LEFT OFF HERE 11/1, testing out tailwind css centered chat messages
+//NOTE: LEFT OFF HERE 1/28 NEED TO RESTRUCTURE THE DATABSE ON HOW I STORE INFORMATION ABOUT DIFFERENT CHAT ROOMS
 function App() {
   const [user] = useAuthState(auth);
 
   return (
-    <div className="min-h-screen bg-blue-200">
-      <header className="bg-yellow-300 ">
+    <div className="min-h-screen bg-white">
+      <header className="bg-[#4ade80] ">
         <div className="flex justify-center  relative">
           <img
             className=" w-24 absolute left-2 hover:scale-105"
             src="/chaticon2.png"
           />
-          <h1 className="text-black text-6xl font-bold font-serif mt-4 mb-4 ">
-            Chat App
+          <h1 className="text-white text-6xl font-bold font-serif mt-4 mb-4 ">
+            Mingle
           </h1>
         </div>
         <SignOut />

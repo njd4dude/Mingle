@@ -38,7 +38,6 @@ const ChatRoom = () => {
   const [imageList, setImageList] = useState([]);
   const dummy = useRef();
   const messagesRef = collection(db, "messages");
-  const [imagesLoaded, setImagesLoaded] = useState(false); // Added state
 
   useEffect(() => {
     console.log("MESSAGES: ", messages);
@@ -48,9 +47,8 @@ const ChatRoom = () => {
   //get the messages and the images
   useEffect(() => {
     const fetchData = async () => {
-      await fetchImages();
+      // await fetchImages(); (NOT USING)
       await fetchMessages();
-      setImagesLoaded(true);
     };
 
     fetchData();
@@ -71,6 +69,7 @@ const ChatRoom = () => {
   // }, [messages, imageList]);
 
   //get the messages
+
   const fetchMessages = async () => {
     const q = query(messagesRef, orderBy("createdAt"), limit(25));
 
@@ -79,8 +78,10 @@ const ChatRoom = () => {
         id: doc.id,
         ...doc.data(),
       }));
+      console.log("message data in fetch Messages: ", messageData);
       const objDatedMessages = addDatetoMessages(messageData);
       setMessages(objDatedMessages);
+
       console.log("messages have been set");
     });
 
@@ -102,41 +103,37 @@ const ChatRoom = () => {
     return messagesWithDate;
   };
 
-  //goal: associate images with a user id(uid)
+  //get the images(don't need this right now because images are put into the messages directly. Inserts data url into messages list so there is no need to query from seperate doc list)
+  // const fetchImages = async () => {
+  //   try {
+  //     const imageListRef = ref(storage, "images");
+  //     const res = await listAll(imageListRef);
 
-  //get the images
-  const fetchImages = async () => {
-    try {
-      const imageListRef = ref(storage, "images");
-      const res = await listAll(imageListRef);
+  //     const urlsWithTimestamps = await Promise.all(
+  //       res.items.map(async (item) => {
+  //         const metaData = await getMetadata(item);
+  //         const createdAt = metaData.timeCreated;
+  //         const dateObject = new Date(createdAt);
+  //         const url = await getDownloadURL(item);
+  //         console.log("the url:", url);
+  //         console.log("the createdAt(dateObject):", dateObject);
 
-      const urlsWithTimestamps = await Promise.all(
-        res.items.map(async (item) => {
-          const metaData = await getMetadata(item);
-          const createdAt = metaData.timeCreated;
-          const dateObject = new Date(createdAt);
-          const url = await getDownloadURL(item);
-          console.log("the url:", url);
-          console.log("the createdAt(dateObject):", dateObject);
+  //         return { url, createdAt: dateObject }; // Include createdAtDate with the URL
+  //       })
+  //     );
 
-          return { url, createdAt: dateObject }; // Include createdAtDate with the URL
-        })
-      );
-
-      setImageList(urlsWithTimestamps);
-      console.log("setImageList completed");
-    } catch (error) {
-      console.error("Error fetching image list:", error);
-    }
-  };
+  //     setImageList(urlsWithTimestamps);
+  //     console.log("setImageList completed");
+  //   } catch (error) {
+  //     console.error("Error fetching image list:", error);
+  //   }
+  // };
 
   //handle when user hits send
   const handleSend = async (e) => {
     e.preventDefault();
     console.log("send attempt!");
 
-    const sendButton = e.target.elements["sendButton"];
-    console.log("sendButton: ", sendButton);
     // Disable the send button to prevent spamming
     e.target.elements["sendButton"].disabled = true;
 
@@ -234,8 +231,8 @@ const ChatRoom = () => {
   }, [imageURL]);
 
   return (
-    <div className="bg-red-300 ">
-      <main className="bg-blue-200 mb-24">
+    <div className="">
+      <main className=" mb-24">
         {messages &&
           messages.map((msg) => (
             <>
@@ -253,10 +250,10 @@ const ChatRoom = () => {
           handleSend(e);
         }}
       >
-        <div className="flex justify-between h-24 bg-black w-full fixed bottom-0">
+        <div className="flex justify-between h-24  w-full fixed bottom-0 border-black border-t-2">
           <div className=" bg-blue-400 flex-grow flex">
             <input
-              className="text-2xl w-full h-full"
+              className="px-4 text-2xl w-full h-full focus:border-4 "
               placeholder="Enter text"
               value={formValue}
               onChange={(e) => setFormValue(e.target.value)}
