@@ -34,7 +34,6 @@ const ChatRoom = () => {
   const [isInitialLoad, setIsInitialLoad] = useState(true); // Added state
   const [imageUpload, setImageUpload] = useState(null);
   const [imageURL, setImageURL] = useState("");
-  const [combinedData, setCombinedData] = useState([]);
   const [imageList, setImageList] = useState([]);
   const dummy = useRef();
   const messagesRef = collection(db, "messages");
@@ -54,22 +53,7 @@ const ChatRoom = () => {
     fetchData();
   }, []);
 
-  // combine data: once the messages and images are retrieved combine them (not using as of right now)
-  // useEffect(() => {
-  //   if (!imagesLoaded) return;
-  //   console.log("combining data...");
-  //   console.log("data from messages ->", messages);
-  //   console.log("data from imageList ->", imageList);
-
-  //   const newData = [...messages, ...imageList].sort(
-  //     (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
-  //   );
-  //   console.log("the COMBINED data: ", newData);
-  //   setCombinedData(newData);
-  // }, [messages, imageList]);
-
   //get the messages
-
   const fetchMessages = async () => {
     const q = query(messagesRef, orderBy("createdAt"), limit(25));
 
@@ -102,32 +86,6 @@ const ChatRoom = () => {
     console.log("fixed date object for messages");
     return messagesWithDate;
   };
-
-  //get the images(don't need this right now because images are put into the messages directly. Inserts data url into messages list so there is no need to query from seperate doc list)
-  // const fetchImages = async () => {
-  //   try {
-  //     const imageListRef = ref(storage, "images");
-  //     const res = await listAll(imageListRef);
-
-  //     const urlsWithTimestamps = await Promise.all(
-  //       res.items.map(async (item) => {
-  //         const metaData = await getMetadata(item);
-  //         const createdAt = metaData.timeCreated;
-  //         const dateObject = new Date(createdAt);
-  //         const url = await getDownloadURL(item);
-  //         console.log("the url:", url);
-  //         console.log("the createdAt(dateObject):", dateObject);
-
-  //         return { url, createdAt: dateObject }; // Include createdAtDate with the URL
-  //       })
-  //     );
-
-  //     setImageList(urlsWithTimestamps);
-  //     console.log("setImageList completed");
-  //   } catch (error) {
-  //     console.error("Error fetching image list:", error);
-  //   }
-  // };
 
   //handle when user hits send
   const handleSend = async (e) => {
@@ -169,7 +127,7 @@ const ChatRoom = () => {
         // Get the download URL
         const url = await getDownloadURL(imagesRef);
 
-        // Save the image details to Firestore with the associated uid
+        // Save the image details to messages section in the firestore database
         await addDoc(messagesRef, {
           url,
           createdAt: new Date(),
@@ -231,7 +189,7 @@ const ChatRoom = () => {
   }, [imageURL]);
 
   return (
-    <div className="">
+    <div className="CR-wrapper">
       <main className=" mb-24">
         {messages &&
           messages.map((msg) => (

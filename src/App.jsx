@@ -10,6 +10,7 @@ import ChatRoom from "./components/ChatRoom";
 import SignIn from "./components/SignIn";
 import SignOut from "./components/SignOut";
 import { getStorage } from "firebase/storage";
+import Menu from "./components/Menu";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_apiKey,
@@ -40,7 +41,8 @@ function App() {
 
   return (
     <div className="min-h-screen bg-white">
-      <header className="bg-[#4ade80] ">
+      <Menu />
+      {/* <header className="bg-[#4ade80] ">
         <div className="flex justify-center  relative">
           <img
             className=" w-24 absolute left-2 hover:scale-105"
@@ -51,8 +53,8 @@ function App() {
           </h1>
         </div>
         <SignOut />
-      </header>
-      {user ? <ChatRoom /> : <SignIn />}
+      </header> */}
+      {/* {user ? <ChatRoom /> : <SignIn />} */}
     </div>
   );
 }
